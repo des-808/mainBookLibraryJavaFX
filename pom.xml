@@ -24,8 +24,15 @@
       <artifactId>javafx-fxml</artifactId>
       <version>22-ea+11</version>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/com.microsoft.sqlserver/mssql-jdbc -->
+    <dependency>
+      <groupId>com.microsoft.sqlserver</groupId>
+      <artifactId>mssql-jdbc</artifactId>
+      <version>12.8.0.jre11</version>
+    </dependency>
 
-<dependency>
+
+    <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
       <version>${junit.version}</version>
