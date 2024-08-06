@@ -109,6 +109,10 @@ public class Book {
     public String getIsbn() {
         return isbn;
     }
+    public Book getIsbnBook() {
+        Book book = new Book(isbn);
+        return book;
+    }
 
     public void setIsbn(String isbn) {
         this.isbn = isbn;
