@@ -4,6 +4,7 @@ module org.example.mainbooklibraryjavafx {
     requires javafx.fxml;
     requires java.sql;
     requires java.desktop;
+    requires com.microsoft.sqlserver.jdbc;
 
 
     opens org.example.mainbooklibraryjavafx to javafx.fxml;
