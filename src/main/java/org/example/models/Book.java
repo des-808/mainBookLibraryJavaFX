@@ -65,6 +65,7 @@ public class Book {
     public Book(String isbn) {
         this.isbn = isbn;
     }
+    public Book() {}
 
     public Book(int bookId, String bookTitle) {
         this.id = bookId;
@@ -126,6 +127,7 @@ public class Book {
     public void setAuthor(Author author) {
         this.author = author;
     }
+
 
     public int getAuthorId() {
         return author.getId();

@@ -1,0 +1,136 @@
+.root {
+    -fx-font-family: Montserrat;
+    -fx-padding: 10;
+    -fx-background-color: linear-gradient(#9F9F9F, #2a2a2a);
+
+}
+
+.popup {
+    -fx-background-color: transparent;
+}
+
+.table-cell {
+    -fx-alignment: center;
+}
+
+.table-view .column-header {
+    -fx-background-color: #525252;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+}
+
+.table-view .column-header > .label {
+    -fx-text-fill: #fff;
+}
+
+.table-view .table-row-cell:odd {
+    -fx-background-color: #dedede;
+}
+
+.table-view .table-row-cell:even {
+    -fx-background-color: #b0b0b0;
+}
+
+.text-field {
+    -fx-border-color: #7d7d7d;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-padding: 5;
+}
+
+.text-field:focused {
+    -fx-border-color: #2eaedd;
+}
+
+.button {
+    -fx-background-color: #0B3AEA;
+    -fx-text-fill: #fff;
+    -fx-text-alignment: center;
+    -fx-padding: 5 15 5 15;
+    -fx-border-radius: 10;
+}
+
+.button:hover {
+    -fx-background-color: #1B37A1;
+}
+
+.button-edit {
+    -fx-background-color: #DFD913;
+}
+
+.button-edit:hover {
+    -fx-background-color: #B5B51E;
+}
+
+.button-delete {
+    -fx-background-color: #EC2A12;
+}
+
+.button-delete:hover {
+    -fx-background-color: #972215;
+}
+
+.title-bar > HBox {
+    -fx-spacing: 5px;
+}
+
+.icon-label-bar {
+    -fx-alignment: center-left;
+}
+
+.buttons-bar {
+    -fx-alignment: center-right;
+}
+
+.buttons-bar > Button {
+    -fx-text-fill: white;
+    -fx-background-color: transparent;
+    -fx-cursor: hand;
+    -fx-padding: 0 5px;
+    -fx-font-size: 14px;
+}
+
+.buttons-bar > Button:hover {
+    -fx-background-color: #444;
+}
+
+.custom-title {
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-alignment: center-left;
+}
+
+.menu-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-cursor: hand;
+}
+
+.context-menu {
+    -fx-background-color: transparent;
+}
+
+.menu-button:hover {
+    -fx-background-color: #afafaf;
+}
+
+.menu-button:showing {
+    -fx-background-color: #818181;
+}
+
+.menu-item {
+    -fx-background-color: #787878;
+    -fx-text-fill: white;
+    -fx-padding: 10 20;
+}
+
+.menu-item:hover {
+    -fx-background-color: #afafaf;
+}
+
+.label {
+    -fx-text-fill: white;
+}
+

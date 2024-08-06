@@ -11,8 +11,10 @@ public class MainApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("main-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 320, 240);
-        stage.setTitle("Библиотека");
+        Scene scene = new Scene(fxmlLoader.load(), 800, 400);
+        scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+        stage.setTitle("Моя Библиотека");
+        stage.setResizable(false);
         stage.setScene(scene);
         stage.show();
     }

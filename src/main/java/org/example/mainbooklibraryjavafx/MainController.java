@@ -60,7 +60,7 @@ public class MainController {
                         btn.getStyleClass().add("button-edit");
                         btn.setOnAction(event -> {
                             Book book = getTableView().getItems().get(getIndex());
-                            //showBookForm(book);
+                            showBookForm(book);
                         });
                     }
                     @Override
@@ -90,7 +90,7 @@ public class MainController {
                         btn.setOnAction(event -> {
                             Book book = getTableView().getItems().get(getIndex());
                             library.removeBook(book.getIsbnBook());
-                            //refreshTable();
+                            refreshTable();
                         });
                     }
                     @Override
@@ -129,8 +129,8 @@ public class MainController {
             scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
             stage.setResizable(false);
             stage.setScene(scene);
-            //BookFormController controller = loader.getController();
-            //controller.setBook(book);
+            BookFormController controller = loader.getController();
+            controller.setBook(book);
             stage.showAndWait();
             refreshTable();
         }catch (IOException e) { e.printStackTrace();}

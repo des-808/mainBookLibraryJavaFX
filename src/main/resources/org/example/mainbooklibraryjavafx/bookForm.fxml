@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.geometry.Insets?>
+<VBox alignment="CENTER" spacing="5" xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="org.example.mainbooklibraryjavafx.BookFormController">
+    <padding>
+        <Insets top="10" bottom="10" left="10" right="10"/>
+    </padding>
+    <TextField fx:id="isbnField" promptText="Введите ISBN книги..."/>
+    <TextField fx:id="titleField" promptText="Введите название книги..."/>
+    <TextField fx:id="authorFirstField" promptText="Введите Имя автора книги..."/>
+    <TextField fx:id="authorLastField" promptText="Введите Фамилию автора книги..."/>
+    <TextField fx:id="yearField" promptText="Введите год издания книги..."/>
+    <Button text="Сохранить" onAction="#saveBook" />
+</VBox>

@@ -10,4 +10,5 @@ module org.example.mainbooklibraryjavafx {
     opens org.example.mainbooklibraryjavafx to javafx.fxml;
     //opens org.example.mainbooklibraryjavafx.models to  javafx.base;
     exports org.example.mainbooklibraryjavafx;
+    exports org.example.models;
 }
