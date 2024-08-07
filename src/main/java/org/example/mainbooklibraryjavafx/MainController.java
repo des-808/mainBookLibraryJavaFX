@@ -18,14 +18,19 @@ import java.io.IOException;
 
 public class MainController {
     public TableView<Book> bookTable;
-    public TableColumn<Book, String> isbnColumn;
     public TableColumn<Book, String> titleColumn;
+    public TableColumn<Book,String> priceColumn;
+    public TableColumn<Book, String> pagesColumn;
+    public TableColumn<Book, String> isbnColumn;
+
     public TableColumn<Book, String> authorColumn;
     public TableColumn<Book, Integer> yearColumn;
-    public TextField isbnField;
-    public TextField titleField;
-    public TextField authorField;
-    public TextField yearField;
+    public TableColumn<Book, String> publisherColumn;
+    public TableColumn<Book, String> genreColumn;
+    //public TextField isbnField;
+    //public TextField titleField;
+    //public TextField authorField;
+    //public TextField yearField;
 
     private final Library library= new Library();
     private final ObservableList<Book> bookList = FXCollections.observableArrayList();
@@ -33,6 +38,10 @@ public class MainController {
     public TableColumn<Book, Void> deleteColumn;
 
     public void initialize() {
+        priceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
+        pagesColumn.setCellValueFactory(new PropertyValueFactory<>("pages"));
+        publisherColumn.setCellValueFactory(new PropertyValueFactory<>("publisher"));
+        genreColumn.setCellValueFactory(new PropertyValueFactory<>("genre"));
         isbnColumn.setCellValueFactory(new PropertyValueFactory<>("isbn"));
         titleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
         authorColumn.setCellValueFactory(new PropertyValueFactory<>("author"));
@@ -125,7 +134,7 @@ public class MainController {
             Stage stage = new Stage();
             stage.setTitle(book == null? "Добавление книги" : "Редактирование книги");
             stage.initModality(Modality.APPLICATION_MODAL);
-            Scene scene = new Scene(loader.load(), 400, 200);
+            Scene scene = new Scene(loader.load(), 400, 400);
             scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
             stage.setResizable(false);
             stage.setScene(scene);

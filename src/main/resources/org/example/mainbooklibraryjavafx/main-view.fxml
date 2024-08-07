@@ -32,8 +32,13 @@
     <columns>
       <TableColumn fx:id="isbnColumn" text="ISBN" />
       <TableColumn fx:id="titleColumn" text="Название" />
+      <TableColumn fx:id="priceColumn" text="Цена" />
+      <TableColumn fx:id="pagesColumn" text="Страниц" />
       <TableColumn fx:id="authorColumn" text="Автор" />
       <TableColumn fx:id="yearColumn" text="Год" />
+      <TableColumn fx:id="publisherColumn" text="Издатель" />
+      <TableColumn fx:id="genreColumn" text="Жанр" />
+
       <TableColumn fx:id="editColumn" text="Изменение" />
       <TableColumn fx:id="deleteColumn" text="Удаление" />
     </columns>

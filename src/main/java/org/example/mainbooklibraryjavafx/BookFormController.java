@@ -4,15 +4,21 @@ import javafx.event.ActionEvent;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.example.models.Author;
+import org.example.models.Genre;
+import org.example.models.Publisher;
 import org.example.utils.Library;
 import org.example.models.Book;
 
 public class BookFormController {
-    public TextField isbnField;
     public TextField titleField;
-    public TextField yearField;
+    public TextField priceField;
+    public TextField pagesField;
+    public TextField isbnField;
     public TextField authorFirstField;
     public TextField authorLastField;
+    public TextField publisherField;
+    public TextField yearField;
+    public TextField genreField;
 
     private Library library = new Library();
     private Book book;
@@ -20,29 +26,41 @@ public class BookFormController {
     public void setBook(Book book) {
         this.book = book;
         if(book != null) {
-            isbnField.setText(book.getIsbn());
             titleField.setText(book.getTitle());
+            priceField.setText(String.valueOf(book.getPrice()));
+            pagesField.setText(String.valueOf(book.getPages()));
+            isbnField.setText(book.getIsbn());
+
             authorFirstField.setText(book.getAuthorFirstName());
             authorLastField.setText(book.getAuthorLastName());
+            publisherField.setText(book.getPublisher());
             //yearField.setText(String.valueOf(book.getYear()));
+            genreField.setText(book.getGenre());
         }
     }
 
     public void saveBook() {
+        boolean isNewBook = false;
         if(book == null) {
             book = new Book();
+            isNewBook = true;
         }
-        book.setIsbn(isbnField.getText());
         book.setTitle(titleField.getText());
+        book.setPrice(Double.parseDouble(priceField.getText()));
+        book.setPages(Integer.parseInt(pagesField.getText()));
+        book.setIsbn(isbnField.getText());
         Author author = new Author(authorFirstField.getText(),authorLastField.getText());
         book.setAuthor(author);
-       // book.setYear(Integer.parseInt(yearField.getText()));
-
-       /* if(book.getId() == null) {
+        Publisher publisher = new Publisher(publisherField.getText());
+        book.setPublisher(publisher);
+        // book.setYear(Integer.parseInt(yearField.getText()));
+        Genre genre = new Genre(genreField.getText());
+        book.setGenre(genre);
+        if(isNewBook) {
             library.addBook(book);
         } else {
             library.updateBook(book);
-        }*/
+        }
         //закрытие окна после добавления/изменения
         Stage stage = (Stage)isbnField.getScene().getWindow();
         stage.close();
