@@ -34,26 +34,27 @@ public class DatabaseManager {
     private static String user;
     private static String pass;
     private static String url_head;
-    private static String dbName = "";
+    private static String dbName = "LibraryDB3";
+    private static String test_dbName;
     private static String url_tail;
 
     public static String getDbName() { return dbName; }
     public static void setDbName(String tmp) {dbName = tmp;}
-    public static String getUrl_tail() {
-        return url_tail;
-    }
+    public static String getUrl_tail() {return url_tail;}
+    public static void setUrl_tail(String urlTail) {url_tail = urlTail;}
+    public static String getUrl_head() {return url_head;}
+    public static void setUrl_head(String urlHead) {url_head = urlHead;}
 
-    public static void setUrl_tail(String urlTail) {
-        url_tail = urlTail;
-    }
-
-    public static String getUrl_head() {
-        return url_head;
-    }
-
-    public static void setUrl_head(String urlHead) {
-        url_head = urlHead;
-    }
+    public static String getUser() { return user; }
+    public static void setUser(String user_) { user = user_; }
+    public static String getPass() { return pass; }
+    public static void setPass(String pass_) { pass = pass_; }
+    public static String getUrl() {return url;}
+    public static String getUrlTest() {return testUrl;}
+    private static void setUrlTest(String urlTest) {testUrl = urlTest;}
+    public static void setUrl(String url_) {url = url_;}
+    public static String getTest_dbName() {return test_dbName;}
+    public static void setTest_dbName(String test_dbName_) {test_dbName = test_dbName_;}
 
     public static void DatabaseManagerInit() {
         initConnectionProperties(); // load connection properties from file
@@ -68,11 +69,17 @@ public class DatabaseManager {
             System.out.println(ex);
         }
         setUrl_head(props.getProperty("url_head"));
-        setDbName(props.getProperty("url_dbName"));
+        setDbName(props.getProperty("dbNames"));
         setUrl_tail(props.getProperty("url_tail"));
-        setUrl(getUrl_head()+" "+getDbName()+" "+getUrl_tail());
-        setUrlTest(props.getProperty("url_Test"));
+        setUrl(getUrl_head()+getDbName()+getUrl_tail());
         //setUrl(props.getProperty("url"));
+        System.out.println(getUrl());
+        //-------------------------------------------------------------------------
+        //setUrlTest(props.getProperty("url_Test"));
+        setTest_dbName(props.getProperty("test_dbName"));
+        setUrlTest(getUrl_head()+getTest_dbName()+getUrl_tail());
+        System.out.println(getUrlTest());
+        //-------------------------------------------------------------------------
         setUser(props.getProperty("username"));
         setPass(props.getProperty("password"));
     }
@@ -116,27 +123,9 @@ public class DatabaseManager {
         }
     }
 
-
-    public static String getUser() { return user; }
-    public static void setUser(String user_) { user = user_; }
-    public static String getPass() { return pass; }
-    public static void setPass(String pass_) { pass = pass_; }
-    public static String getUrl() {
-        return url;
-    }
-    public static String getUrlTest() {
-        return testUrl;
-    }
-    private static void setUrlTest(String urlTest) {testUrl = urlTest;
-    }
-    public static void setUrl(String url_) {
-        url = url_;
-    }
-
-
-    static String newBdName = "CREATE DATABASE "+getDbName()+" ";
-static String newBd = /*"CREATE DATABASE "+dbName+" " +*/
-        " "+getDbName()+" " +
+    static String newBdName = "CREATE DATABASE "+ getDbName() ;
+    static String newBd = /*"CREATE DATABASE "+dbName+" " +*/
+        " USE "+getDbName()+" " +
         "CREATE TABLE Author (" +
         "    Author_id INT PRIMARY KEY IDENTITY(1,1)," +
         "    FirstName VARCHAR(255)," +
@@ -144,25 +133,41 @@ static String newBd = /*"CREATE DATABASE "+dbName+" " +*/
         ") " +
         "CREATE TABLE Publisher (" +
         "    Publisher_id INT PRIMARY KEY IDENTITY(1,1)," +
-        "    PublisherName VARCHAR(255)" +
+        "    PublisherName VARCHAR(255)," +
+        "    PublisherYear INT" +
         ") " +
         "CREATE TABLE Genre (" +
         "    Genre_id INT PRIMARY KEY IDENTITY(1,1)," +
         "    GenreName VARCHAR(255)" +
+        ") " +
+        "CREATE TABLE Series (" +
+        "    Series_id INT PRIMARY KEY IDENTITY(1,1)," +
+        "    SeriesName VARCHAR(255)) " +
+        "CREATE TABLE Cover (" +
+        "    Cover_id INT PRIMARY KEY IDENTITY(1,1)," +
+        "    CoverName VARCHAR(255)," +
+        "    CoverPath VARCHAR(255)" +
         ") " +
         "CREATE TABLE Book (" +
         "    id INT PRIMARY KEY IDENTITY(1,1)," +
         "    title VARCHAR(255)," +
         "    price DECIMAL(10)," +
         "    pages INT," +
+        "    year INT," +
         "    isbn VARCHAR(13)," +
+        "    cover_id INT,"    +
+        "    series_id INT," +
         "    author_id INT," +
         "    publisher_id INT," +
         "    genre_id INT," +
+        "    FOREIGN KEY (cover_id) REFERENCES Cover(Cover_id)," +
+        "    FOREIGN KEY (series_id) REFERENCES Series(Series_id)," +
         "    FOREIGN KEY (author_id) REFERENCES Author(Author_id)," +
         "    FOREIGN KEY (publisher_id) REFERENCES Publisher(Publisher_id)," +
         "    FOREIGN KEY (genre_id) REFERENCES Genre(Genre_id)" +
         ") ";
+
+
 
     //-------------------------------------------------------------------------
 

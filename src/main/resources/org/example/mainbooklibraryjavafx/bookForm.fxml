@@ -1,26 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
 <?import javafx.scene.layout.*?>
 
-<?import javafx.geometry.Insets?>
-<VBox alignment="CENTER" spacing="5" xmlns="http://javafx.com/javafx"
-      xmlns:fx="http://javafx.com/fxml"
-      fx:controller="org.example.mainbooklibraryjavafx.BookFormController">
+<VBox alignment="CENTER" spacing="5" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.mainbooklibraryjavafx.BookFormController">
     <padding>
-        <Insets top="10" bottom="10" left="10" right="10"/>
+        <Insets bottom="10" left="10" right="10" top="10" />
     </padding>
-    <TextField fx:id="titleField" promptText="Введите название книги..."/>
-    <TextField fx:id="priceField" promptText="Введите цену книги..."/>
-    <TextField fx:id="pagesField" promptText="Введите колличество страниц книги..."/>
-    <TextField fx:id="isbnField" promptText="Введите ISBN книги..."/>
-    <TextField fx:id="authorFirstField" promptText="Введите Имя автора книги..."/>
-    <TextField fx:id="authorLastField" promptText="Введите Фамилию автора книги..."/>
-    <TextField fx:id="publisherField" promptText="Введите Издателя книги..."/>
-    <TextField fx:id="yearField" promptText="Введите год издания книги..."/>
-    <TextField fx:id="genreField" promptText="Введите жанр книги..."/>
-    <Button text="Сохранить" onAction="#saveBook" />
+    <TextField fx:id="titleField" promptText="Введите название книги..." />
+    <TextField fx:id="priceField" promptText="Введите цену книги..." />
+    <TextField fx:id="pagesField" promptText="Введите колличество страниц книги..." />
+    <TextField fx:id="isbnField" promptText="Введите ISBN книги..." />
+    <TextField fx:id="authorFirstField" promptText="Введите Имя автора книги..." />
+    <TextField fx:id="authorLastField" promptText="Введите Фамилию автора книги..." />
+    <TextField fx:id="publisherField" promptText="Введите Издателя книги..." />
+    <TextField fx:id="yearField" promptText="Введите год издания книги..." />
+    <TextField fx:id="genreField" promptText="Введите жанр книги..." />
+    <TextField fx:id="seriesField" promptText="Введите серию книги"/>
+    <TextField fx:id="coverField" promptText="Введите название обложки книги"/>
+
+   <ButtonBar nodeOrientation="LEFT_TO_RIGHT" VBox.vgrow="NEVER">
+     <buttons>
+         <Button alignment="CENTER" nodeOrientation="LEFT_TO_RIGHT" onAction="#saveBook" text="Сохранить" textAlignment="CENTER">
+            <effect>
+               <Bloom threshold="0.89" />
+            </effect></Button>
+         <Button alignment="CENTER_RIGHT" cancelButton="true" nodeOrientation="RIGHT_TO_LEFT" onAction="#Cancel" text="Отмена" textAlignment="CENTER" />
+     </buttons>
+      <VBox.margin>
+         <Insets />
+      </VBox.margin>
+   </ButtonBar>
+
+
 </VBox>

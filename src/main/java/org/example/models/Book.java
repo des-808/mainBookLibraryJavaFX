@@ -4,62 +4,69 @@ import java.util.Objects;
 //наделал фигни
 public class Book {
 
-
-    public org.example.models.Author Author;
-    public org.example.models.Author Publisher;
-    public org.example.models.Author Genre;
-    //public BookLib.Author getAuthor;
+    public org.example.models.Cover Cover; //картинка книги
+    public org.example.models.Series Series; //серия книги
+    public org.example.models.Author Author; //автор книги
+    public org.example.models.Author Publisher; //издатель книги
+    public org.example.models.Author Genre; //жанр книги
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public void setGenre(Author genre) {
-        Genre = genre;
-    }
-
-    public void setPublisher(Author publisher) {
-        Publisher = publisher;
     }
 
     private int id;
     private String title;
     private double price;
     private int pages;
+    private int year;
     private String isbn;
     private Author author;
     private Publisher publisher;
     private Genre genre;
+    private Cover cover;
+    private Series series;
 
-    public Book(String title, double price, int pages, String isbn, Author author, Publisher publisher, Genre genre) {
+
+
+
+    public Book(String title, double price, int pages,int year, String isbn, Author author, Publisher publisher, Genre genre, Series series, Cover cover) {
         this.title = title;
         this.price = price;
         this.pages = pages;
+        this.year = year;
         this.isbn = isbn;
         this.author = author;
         this.publisher = publisher;
         this.genre = genre;
+        this.cover = cover;
+        this.series = series;
     }
 
-    public Book(String title, double price, int pages, String isbn, String author, String publisher, String genre) {
+    public Book(String title, double price, int pages,int year, String isbn, String author, String publisher, String genre, String series, String coverName,String coverPath) {
         this.title = title;
         this.isbn = isbn;
         this.price = price;
         this.pages = pages;
+        this.year = year;
         this.author = new Author(author," ");
         this.publisher = new Publisher(publisher);
         this.genre = new Genre(genre);
+        this.series = new Series(series);
+        this.cover = new Cover(coverName,coverPath);
     }
 
-    public Book(int id, String title, double price, int pages, String isbn, Author author, Publisher publisher, Genre genre) {
+    public Book(int id, String title, double price, int pages, int year,String isbn, Author author, Publisher publisher, Genre genre, Series series, Cover cover) {
         this.id = id;
         this.title = title;
         this.price = price;
         this.pages = pages;
+        this.year = year;
         this.isbn = isbn;
         this.author = author;
         this.publisher = publisher;
         this.genre = genre;
+        this.series = series;
+        this.cover = cover;
     }
 
     public Book(String isbn) {
@@ -71,16 +78,18 @@ public class Book {
         this.id = bookId;
         this.title = bookTitle;
     }
-    /*public Book(String title, double price, int pages,  String isbn){
-        this.title = title;
-        this.price = price;
-        this.pages = pages;
-        this.isbn = isbn;
-    }*/
 
 
     public int getId() {
         return id;
+    }
+
+    public int getYear() {
+        return year;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
     }
 
     public String getTitle() {
@@ -153,6 +162,19 @@ public class Book {
         this.genre = genre;
     }
 
+    public void setSeries(Series series) {
+        this.series = series;
+    }
+    public String getSeries() { return series.getSeries_name();  }
+
+    public String getCover() {
+        return cover.getCover_name();
+    }
+
+    public void setCover(Cover cover) {
+        this.cover = cover;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hashCode(isbn);
@@ -165,11 +187,6 @@ public class Book {
         Book book = (Book) o;
         return Objects.equals(isbn, book.isbn);
     }
-
-    /*@Override
-    public String toString() {
-        return "ISBN: " + isbn + "   Title: " + title + "   BookLib.Author: " + author.getName();
-    }*/
 
     @Override
     public String toString() {
@@ -220,4 +237,9 @@ public class Book {
     public org.example.models.Genre getGenreObject() {
         return genre;
     }
+
+    public org.example.models.Series getSeriesObject() {
+        return series;
+    }
+    public org.example.models.Cover getCoverObject() { return cover;}
 }

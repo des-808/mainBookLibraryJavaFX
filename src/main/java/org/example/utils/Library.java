@@ -16,6 +16,8 @@ public class Library {
             int addedAuthorId = 0;
             int addedPublisherId = 0;
             int addedGenreId = 0;
+            int addedSeriesId = 0;
+            int addedCoverId = 0;
             // Find or add author
             Author foundAuthor = findAuthor(book.getAuthorObject());
             if (foundAuthor == null) {
@@ -40,21 +42,109 @@ public class Library {
                 addedGenreId = foundGenre.getId();
             }
 
+            Series foundSeries = findSeries(book.getSeries());
+            if (foundSeries == null) {
+                addedSeriesId = addSeries(book.getSeriesObject());
+            }
+            else {
+                addedSeriesId = foundSeries.getSeries_id();
+            }
+
+            Cover foundCover = findCover(book.getCover());
+            if (foundCover == null) {
+                addedCoverId = addCover(book.getCoverObject());
+            }
+            else {
+                addedCoverId = foundCover.getCover_id();
+            }
+
             // Update book
-            String query = "UPDATE Book SET title = ?,price =?,pages =?,author_id = ?,publisher_id =?,genre_id=? WHERE isbn = ?";
+            String query = "UPDATE Book SET title = ?,price =?,pages =?,year =?,author_id = ?,publisher_id =?,genre_id=?,series_id =?,cover_id =?WHERE isbn = ?";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, book.getTitle());
             statement.setDouble(2, book.getPrice());
             statement.setInt(3, book.getPages());
-            statement.setInt(4, addedAuthorId);
-            statement.setInt(5, addedPublisherId);
-            statement.setInt(6, addedGenreId);
-            statement.setString(7, book.getIsbn());
+            statement.setInt(4, book.getYear());
+            statement.setInt(5, addedAuthorId);
+            statement.setInt(6, addedPublisherId);
+            statement.setInt(7, addedGenreId);
+            statement.setInt(8, addedSeriesId);
+            statement.setInt(9, addedCoverId);
+            statement.setString(10, book.getIsbn());
             return statement.executeUpdate() > 0;
         } catch (SQLException e) {
             System.out.println("Error executing query: " + e);
             return false;
         }
+    }
+
+    private int addCover(Cover coverObject) {
+        try (Connection connection = DatabaseManager.connect()) {
+            PreparedStatement statement = connection.prepareStatement(
+                    "INSERT INTO Cover (CoverName,CoverPath) VALUES (?,?)",
+                    Statement.RETURN_GENERATED_KEYS);
+            statement.setString(1, coverObject.getCover_name());
+            statement.setString(1, coverObject.getCover_path());
+            if (statement.executeUpdate() > 0) {
+                ResultSet generatedKeys = statement.getGeneratedKeys();
+                if (generatedKeys.next()) {
+                    return generatedKeys.getInt(1);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error executing query: " + e);
+        }
+        return 0;
+    }
+
+    private Cover findCover(String cover) {
+        try (Connection connection = DatabaseManager.connect()) {
+            String query = "SELECT * FROM Cover WHERE CoverName = ?";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, cover);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return new Cover(resultSet.getInt("Cover_id"), resultSet.getString("CoverName"), resultSet.getString("CoverPath"));
+            }
+        } catch (SQLException e) {
+            System.out.println("Error executing query: " + e);
+        }
+        return null;
+    }
+
+    private int addSeries(Series seriesObject) {
+        try (Connection connection = DatabaseManager.connect()) {
+            PreparedStatement statement = connection.prepareStatement(
+                    "INSERT INTO Series (SeriesName) VALUES (?)",
+                    Statement.RETURN_GENERATED_KEYS);
+            statement.setString(1, seriesObject.getSeries_name());
+            if (statement.executeUpdate() > 0) {
+                ResultSet generatedKeys = statement.getGeneratedKeys();
+                if (generatedKeys.next()) {
+                    return generatedKeys.getInt(1);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error executing query: " + e);
+        }
+        return 0;
+    }
+
+
+    private Series findSeries(String series) {
+        try (Connection connection = DatabaseManager.connect()) {
+                String query = "SELECT * FROM Series WHERE SeriesName = ?";
+                PreparedStatement statement = connection.prepareStatement(query);
+                statement.setString(1, series);
+                ResultSet resultSet = statement.executeQuery();
+                if (resultSet.next()) {
+                    return new Series(resultSet.getInt("Series_id"), resultSet.getString("SeriesName"));
+                }
+            } catch (SQLException e) {
+                System.out.println("Error executing query: " + e);
+            }
+            return null;
+
     }
 
     public boolean addBook(Book book) {
@@ -64,6 +154,8 @@ public class Library {
             int addedAuthorId = 0;
             int addedPublisherId = 0;
             int addedGenreId = 0;
+            int addedSeriesId = 0;
+            int addedCoverId = 0;
 
             // Find or add author
             Author author = findAuthor(book.getAuthorObject());
@@ -92,15 +184,34 @@ public class Library {
                 addedGenreId = genre.getId();
             }
 
+            Series foundSeries = findSeries(book.getSeries());
+            if (foundSeries == null) {
+                addedSeriesId = addSeries(book.getSeriesObject());
+            }
+            else {
+                addedSeriesId = foundSeries.getSeries_id();
+            }
+
+            Cover foundCover = findCover(book.getCover());
+            if (foundCover == null) {
+                addedCoverId = addCover(book.getCoverObject());
+            }
+            else {
+                addedCoverId = foundCover.getCover_id();
+            }
+
             // Add book
-            statement = connection.prepareStatement("INSERT INTO Book (title,price,pages, isbn, author_id, publisher_id, genre_id) VALUES (?,?,?,?,?,?,?)");
+            statement = connection.prepareStatement("INSERT INTO Book (title,price,pages,year, isbn, author_id, publisher_id, genre_id, series_id, cover_id) VALUES (?,?,?,?,?,?,?,?,?,?)");
             statement.setString(1, book.getTitle());
             statement.setDouble(2, book.getPrice());
             statement.setInt(3, book.getPages());
-            statement.setString(4, book.getIsbn());
-            statement.setInt(5, addedAuthorId);
-            statement.setInt(6, addedPublisherId);
-            statement.setInt(7, addedGenreId);
+            statement.setInt(4, book.getYear());
+            statement.setString(5, book.getIsbn());
+            statement.setInt(6, addedAuthorId);
+            statement.setInt(7, addedPublisherId);
+            statement.setInt(8, addedGenreId);
+            statement.setInt(9, addedSeriesId);
+            statement.setInt(10, addedCoverId);
             return statement.executeUpdate() > 0;
         } catch (SQLException e) {
             System.out.println("Error executing query: " + e);
@@ -211,7 +322,7 @@ public class Library {
     public List<Book> findBookByGenre(Genre genr) {
         List<Book> books = new ArrayList<>();
         try (Connection connection = DatabaseManager.connect()) {
-            String query = "SELECT Book.id, Book.title,Book.price, Book.pages, Book.isbn, Author.Author_id, Author.FirstName, Author.LastName, Publisher.Publisher_id, Publisher.PublisherName, Genre.Genre_id ,Genre.GenreName FROM Book " +
+            String query = "SELECT Book.id, Book.title,Book.price, Book.pages,Book.year, Book.isbn, Author.Author_id, Author.FirstName, Author.LastName, Publisher.Publisher_id, Publisher.PublisherName, Genre.Genre_id ,Genre.GenreName FROM Book " +
                     "JOIN Author ON Book.author_id = Author.Author_id " +
                     "JOIN Publisher ON Book.publisher_id = Publisher.Publisher_id " +
                     "JOIN Genre ON Book.genre_id = Genre.Genre_id " +
@@ -220,18 +331,26 @@ public class Library {
             statement.setString(1, genr.getName());
             ResultSet resultSet = statement.executeQuery();
             while(resultSet.next()) {
+                Series series = new Series(resultSet.getInt("Series_id"), resultSet.getString("SeriesName"));
+                Cover cover = new Cover(resultSet.getInt("Cover_id"),resultSet.getString("CoverName"), resultSet.getString("CoverPath"));
                 Author author = new Author(resultSet.getInt("Author_id"), resultSet.getString("FirstName"), resultSet.getString("LastName"));
                 Publisher publisher = new Publisher(resultSet.getInt("Publisher_id"), resultSet.getString("PublisherName"));
                 Genre genre = new Genre(resultSet.getInt("Genre_id"), resultSet.getString("GenreName"));
+                series = new Series(resultSet.getInt("Series_id"), resultSet.getString("SeriesName"));// Добавляем серию книги в коллекцию или сохраняем в базе данных
+                cover = new Cover(resultSet.getInt("Cover_id"),resultSet.getString("CoverName"), resultSet.getString("CoverPath"));// Добавляем обложку книги в коллекцию или сохраняем в базе данных
                 Book book = new Book(
                         resultSet.getInt("id"),
                         resultSet.getString("title"),
                         resultSet.getDouble("price"),
                         resultSet.getInt("pages"),
+                        resultSet.getInt("year"),
                         resultSet.getString("isbn"),
                         author,
                         publisher,
-                        genre
+                        genre,
+                        series,
+                        cover
+
                 );// Добавляем автора и книгу в коллекцию или сохраняем в базе данных
                 books.add(book);
             }
@@ -284,15 +403,20 @@ public class Library {
                 Author author = new Author(resultSet.getInt("Author_id"), resultSet.getString("FirstName"), resultSet.getString("LastName"));
                 Publisher publisher = new Publisher(resultSet.getInt("Publisher_id"), resultSet.getString("PublisherName"));
                 Genre genre = new Genre(resultSet.getInt("Genre_id"), resultSet.getString("GenreName"));
+                Series series = new Series(resultSet.getInt("Series_id"), resultSet.getString("SeriesName"));// Добавляем серию книги в коллекцию или сохраняем в базе данных
+                Cover cover = new Cover(resultSet.getInt("Cover_id"),resultSet.getString("CoverName"), resultSet.getString("CoverPath"));// Добавляем обложку книги в коллекцию или сохраняем в базе данных
                 Book book = new Book(
                         resultSet.getInt("id"),
                         resultSet.getString("title"),
                         resultSet.getDouble("price"),
                         resultSet.getInt("pages"),
+                        resultSet.getInt("year"),
                         resultSet.getString("isbn"),
                         author,
                         publisher,
-                        genre
+                        genre,
+                        series,
+                        cover
                 );// Добавляем автора и книгу в коллекцию или сохраняем в базе данных
                 books.add(book);
             }
@@ -349,10 +473,12 @@ public class Library {
     // добавляем новую книгу в базу данных со связанными таблицами
     public Book findBookByIsbn(String isbn) {
         try (Connection connection = DatabaseManager.connect()) {
-           String query ="SELECT Book.id, Book.title,Book.price, Book.pages, Book.isbn, Author.Author_id, Author.FirstName, Author.LastName, Publisher.Publisher_id, Publisher.PublisherName, Genre.Genre_id ,Genre.GenreName FROM Book " +
+           String query ="SELECT Book.id, Book.title,Book.price, Book.pages,Book.year,Book.isbn, Author.Author_id, Author.FirstName, Author.LastName, Publisher.Publisher_id, Publisher.PublisherName, Genre.Genre_id ,Genre.GenreName FROM Book " +
                     "JOIN Author ON Book.author_id = Author.Author_id " +
                     "JOIN Publisher ON Book.publisher_id = Publisher.Publisher_id " +
                     "JOIN Genre ON Book.genre_id = Genre.Genre_id " +
+                    "JOIN Series ON Book.series_id = Series.Series_id " +// Добавляем серию книги в коллекцию или сохраняем в базе данных
+                    "JOIN Cover ON Book.cover_id = Cover.Cover_id " +// Добавляем обложку книги в коллекцию или сохраняем в базе данных
                     "WHERE Book.isbn =?";
             PreparedStatement statement = connection.prepareStatement(query);//"SELECT * FROM Book WHERE isbn = ?"
             statement.setString(1, isbn);
@@ -361,15 +487,20 @@ public class Library {
                 Author author = new Author(resultSet.getInt("Author_id"), resultSet.getString("FirstName"), resultSet.getString("LastName"));
                 Publisher publisher = new Publisher(resultSet.getInt("Publisher_id"), resultSet.getString("PublisherName"));
                 Genre genre = new Genre(resultSet.getInt("Genre_id"), resultSet.getString("GenreName"));
+                Series series = new Series(resultSet.getInt("Series_id"), resultSet.getString("SeriesName"));// Добавляем серию книги в коллекцию или сохраняем в базе данных или сохраняем в базе данных
+                Cover cover = new Cover(resultSet.getInt("Cover_id"),resultSet.getString("CoverName"), resultSet.getString("CoverPath"));// Добавляем обложку книги в коллекцию или сохраняем в базе данных или сохраняем в базе данных
                 return new Book(
                         resultSet.getInt("id"),
                         resultSet.getString("title"),
                         resultSet.getDouble("price"),
                         resultSet.getInt("pages"),
+                        resultSet.getInt("year"),
                         resultSet.getString("isbn"),
                         author,
                         publisher,
-                        genre
+                        genre,
+                        series,
+                        cover
                 );
             }
         } catch (SQLException e) {
@@ -381,10 +512,12 @@ public class Library {
     public List<Book> findBookByAuthor(Author auth) {
         List<Book> books = new ArrayList<>();
         try (Connection connection = DatabaseManager.connect()) {
-            String query ="SELECT Book.id, Book.title,Book.price, Book.pages, Book.isbn, Author.Author_id, Author.FirstName, Author.LastName, Publisher.Publisher_id, Publisher.PublisherName, Genre.Genre_id ,Genre.GenreName FROM Book " +
+            String query ="SELECT Book.id, Book.title,Book.price, Book.pages,Book.year,Book.isbn, Author.Author_id, Author.FirstName, Author.LastName, Publisher.Publisher_id, Publisher.PublisherName, Genre.Genre_id ,Genre.GenreName FROM Book " +
                     "JOIN Author ON Book.author_id = Author.Author_id " +
                     "JOIN Publisher ON Book.publisher_id = Publisher.Publisher_id " +
                     "JOIN Genre ON Book.genre_id = Genre.Genre_id " +
+                    "JOIN Series ON Book.series_id = Series.Series_id " +// Добавляем серию книги в коллекцию или сохраняем в базе данных
+                    "JOIN Cover ON Book.cover_id = Cover.Cover_id " +// Добавляем обложку книги в коллекцию или сохраняем в базе данных
                     "WHERE FirstName = ? AND LastName = ?";
             PreparedStatement statement = connection.prepareStatement(query);//"SELECT * FROM Book WHERE Book.author_id =(SELECT Author_id FROM Author WHERE FirstName = ? AND LastName = ?)"
             statement.setString(1, auth.getFirstName());
@@ -394,15 +527,20 @@ public class Library {
                 Author author = new Author(resultSet.getInt("Author_id"), resultSet.getString("FirstName"), resultSet.getString("LastName"));
                 Publisher publisher = new Publisher(resultSet.getInt("Publisher_id"), resultSet.getString("PublisherName"));
                 Genre genre = new Genre(resultSet.getInt("Genre_id"), resultSet.getString("GenreName"));
+                Series series = new Series(resultSet.getInt("Series_id"), resultSet.getString("SeriesName"));// Добавляем серию книги в коллекцию или сохраняем в базе данных
+                Cover cover = new Cover(resultSet.getInt("Cover_id"),resultSet.getString("CoverName"), resultSet.getString("CoverPath"));// Добавляем обложку книги в коллекцию или сохраняем в базе данных или сохраняем в базе данных
                 Book book = new Book(
                         resultSet.getInt("id"),
                         resultSet.getString("title"),
                         resultSet.getDouble("price"),
                         resultSet.getInt("pages"),
+                        resultSet.getInt("year"),
                         resultSet.getString("isbn"),
                         author,
                         publisher,
-                        genre
+                        genre,
+                        series,
+                        cover
                 );// Добавляем автора и книгу в коллекцию или сохраняем в базе данных
                 books.add(book);
             }
@@ -449,10 +587,12 @@ public class Library {
             Statement statement = connection.createStatement();
            // PreparedStatement statement = connection.prepareStatement(
                         //"SELECT * FROM Book b INNER JOIN Author a ON b.author_id = a.id INNER JOIN Publisher p ON b.publisher_id = p.id INNER JOIN Genre g ON b.genre_id = g.id");
-String query = "SELECT Book.id, Book.title,Book.price, Book.pages, Book.isbn, Author.Author_id, Author.FirstName, Author.LastName, Publisher.Publisher_id, Publisher.PublisherName, Genre.Genre_id ,Genre.GenreName FROM Book " +
+String query = "SELECT Book.id, Book.title,Book.price, Book.pages,Book.year,Book.isbn, Author.Author_id, Author.FirstName, Author.LastName, Publisher.Publisher_id, Publisher.PublisherName, Genre.Genre_id ,Genre.GenreName,Series.Series_id ,Series.SeriesName,Cover.Cover_id, Cover.CoverName, Cover.Cover_id,Cover.CoverName ,Cover.CoverPath FROM Book " +
         "JOIN Author ON Book.author_id = Author.Author_id " +
         "JOIN Publisher ON Book.publisher_id = Publisher.Publisher_id " +
-        "JOIN Genre ON Book.genre_id = Genre.Genre_id ";
+        "JOIN Genre ON Book.genre_id = Genre.Genre_id "+
+        "JOIN Series ON Book.series_id = Series.Series_id " +// Добавляем серию книги в коллекцию или сохраняем в базе данных
+        "JOIN Cover ON Book.cover_id = Cover.Cover_id ";// Добавляем обложку книги в коллекцию или сохраняем в базе данных
 
             ResultSet resultSet = statement.executeQuery(query);
             while (resultSet.next()) {
@@ -469,15 +609,27 @@ String query = "SELECT Book.id, Book.title,Book.price, Book.pages, Book.isbn, Au
                         resultSet.getInt("Genre_id"),
                         resultSet.getString("genreName")
                 );
+                Series series = new Series(
+                        resultSet.getInt("Series_id"),
+                        resultSet.getString("SeriesName")
+                );
+                Cover cover = new Cover(
+                        resultSet.getInt("Cover_id"),
+                        resultSet.getString("CoverName"),
+                        resultSet.getString("CoverPath")
+                );
                 Book book = new Book(
                         resultSet.getInt("id"),
                         resultSet.getString("title"),
                         resultSet.getDouble("price"),
                         resultSet.getInt("pages"),
+                        resultSet.getInt("year"),
                         resultSet.getString("isbn"),
                         author,
                         publisher,
-                        genre
+                        genre,
+                        series,
+                        cover
                 );// Добавляем автора и книгу в коллекцию или сохраняем в базе данных
                 books.add(book);
             }

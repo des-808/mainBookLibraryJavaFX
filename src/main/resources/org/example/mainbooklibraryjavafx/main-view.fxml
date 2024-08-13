@@ -38,6 +38,8 @@
       <TableColumn fx:id="yearColumn" text="Год" />
       <TableColumn fx:id="publisherColumn" text="Издатель" />
       <TableColumn fx:id="genreColumn" text="Жанр" />
+      <TableColumn fx:id="seriesColumn" text="Серия книг" />
+      <TableColumn fx:id="coverColumn" text="Обложка" />
 
       <TableColumn fx:id="editColumn" text="Изменение" />
       <TableColumn fx:id="deleteColumn" text="Удаление" />

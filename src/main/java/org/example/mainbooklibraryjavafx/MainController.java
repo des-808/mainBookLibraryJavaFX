@@ -22,30 +22,30 @@ public class MainController {
     public TableColumn<Book,String> priceColumn;
     public TableColumn<Book, String> pagesColumn;
     public TableColumn<Book, String> isbnColumn;
-
     public TableColumn<Book, String> authorColumn;
     public TableColumn<Book, Integer> yearColumn;
     public TableColumn<Book, String> publisherColumn;
     public TableColumn<Book, String> genreColumn;
-    //public TextField isbnField;
-    //public TextField titleField;
-    //public TextField authorField;
-    //public TextField yearField;
+    public TableColumn<Book, String> seriesColumn;
+    public TableColumn<Book, String> coverColumn;
 
     private final Library library= new Library();
     private final ObservableList<Book> bookList = FXCollections.observableArrayList();
     public TableColumn<Book, Void> editColumn;
     public TableColumn<Book, Void> deleteColumn;
 
+
     public void initialize() {
+        titleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
         pagesColumn.setCellValueFactory(new PropertyValueFactory<>("pages"));
+        isbnColumn.setCellValueFactory(new PropertyValueFactory<>("isbn"));
+        yearColumn.setCellValueFactory(new PropertyValueFactory<>("year"));
+        authorColumn.setCellValueFactory(new PropertyValueFactory<>("author"));
         publisherColumn.setCellValueFactory(new PropertyValueFactory<>("publisher"));
         genreColumn.setCellValueFactory(new PropertyValueFactory<>("genre"));
-        isbnColumn.setCellValueFactory(new PropertyValueFactory<>("isbn"));
-        titleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
-        authorColumn.setCellValueFactory(new PropertyValueFactory<>("author"));
-        //yearColumn.setCellValueFactory(new PropertyValueFactory<>("year"));
+        seriesColumn.setCellValueFactory(new PropertyValueFactory<>("series"));
+        coverColumn.setCellValueFactory(new PropertyValueFactory<>("cover"));
         addButtonsToTable();
         refreshTable();
     }
