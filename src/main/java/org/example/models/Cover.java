@@ -4,7 +4,7 @@ public class Cover {
 
     private int Cover_id;
     private String Cover_name;
-    private String Cover_path;
+    private String Cover_path = "_";
 
     public Cover(int cover_id, String cover_name, String cover_path) {
         Cover_id = cover_id;

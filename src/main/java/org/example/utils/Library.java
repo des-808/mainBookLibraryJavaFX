@@ -84,7 +84,7 @@ public class Library {
                     "INSERT INTO Cover (CoverName,CoverPath) VALUES (?,?)",
                     Statement.RETURN_GENERATED_KEYS);
             statement.setString(1, coverObject.getCover_name());
-            statement.setString(1, coverObject.getCover_path());
+            statement.setString(2, coverObject.getCover_path());
             if (statement.executeUpdate() > 0) {
                 ResultSet generatedKeys = statement.getGeneratedKeys();
                 if (generatedKeys.next()) {
@@ -184,20 +184,22 @@ public class Library {
                 addedGenreId = genre.getId();
             }
 
-            Series foundSeries = findSeries(book.getSeries());
-            if (foundSeries == null) {
-                addedSeriesId = addSeries(book.getSeriesObject());
+            Series series = findSeries(book.getSeries());
+            if (series == null) {
+                series = new Series(book.getSeries());
+                addedSeriesId = addSeries(series);
             }
             else {
-                addedSeriesId = foundSeries.getSeries_id();
+                addedSeriesId = series.getSeries_id();
             }
 
-            Cover foundCover = findCover(book.getCover());
-            if (foundCover == null) {
-                addedCoverId = addCover(book.getCoverObject());
+            Cover cover = findCover(book.getCover());
+            if (cover == null) {
+                cover = new Cover(book.getCover());
+                addedCoverId = addCover(cover);
             }
             else {
-                addedCoverId = foundCover.getCover_id();
+                addedCoverId = cover.getCover_id();
             }
 
             // Add book
@@ -319,7 +321,7 @@ public class Library {
     }
 
 
-    public List<Book> findBookByGenre(Genre genr) {
+    public List<Book> findBookByGenre(Genre findGenre) {
         List<Book> books = new ArrayList<>();
         try (Connection connection = DatabaseManager.connect()) {
             String query = "SELECT Book.id, Book.title,Book.price, Book.pages,Book.year, Book.isbn, Author.Author_id, Author.FirstName, Author.LastName, Publisher.Publisher_id, Publisher.PublisherName, Genre.Genre_id ,Genre.GenreName FROM Book " +
@@ -328,33 +330,9 @@ public class Library {
                     "JOIN Genre ON Book.genre_id = Genre.Genre_id " +
                     "WHERE Genre.GenreName = ?";
             PreparedStatement statement = connection.prepareStatement(query);//"SELECT * FROM Book WHERE Book.Genre_id =(SELECT Genre_id FROM Genre WHERE GenreName = ?)"
-            statement.setString(1, genr.getName());
+            statement.setString(1, findGenre.getName());
             ResultSet resultSet = statement.executeQuery();
-            while(resultSet.next()) {
-                Series series = new Series(resultSet.getInt("Series_id"), resultSet.getString("SeriesName"));
-                Cover cover = new Cover(resultSet.getInt("Cover_id"),resultSet.getString("CoverName"), resultSet.getString("CoverPath"));
-                Author author = new Author(resultSet.getInt("Author_id"), resultSet.getString("FirstName"), resultSet.getString("LastName"));
-                Publisher publisher = new Publisher(resultSet.getInt("Publisher_id"), resultSet.getString("PublisherName"));
-                Genre genre = new Genre(resultSet.getInt("Genre_id"), resultSet.getString("GenreName"));
-                series = new Series(resultSet.getInt("Series_id"), resultSet.getString("SeriesName"));// Добавляем серию книги в коллекцию или сохраняем в базе данных
-                cover = new Cover(resultSet.getInt("Cover_id"),resultSet.getString("CoverName"), resultSet.getString("CoverPath"));// Добавляем обложку книги в коллекцию или сохраняем в базе данных
-                Book book = new Book(
-                        resultSet.getInt("id"),
-                        resultSet.getString("title"),
-                        resultSet.getDouble("price"),
-                        resultSet.getInt("pages"),
-                        resultSet.getInt("year"),
-                        resultSet.getString("isbn"),
-                        author,
-                        publisher,
-                        genre,
-                        series,
-                        cover
-
-                );// Добавляем автора и книгу в коллекцию или сохраняем в базе данных
-                books.add(book);
-            }
-            return books;
+            return getBooks(books, resultSet);
         }catch (SQLException e) {
             System.out.println("Error executing query: " + e);
         }
@@ -399,28 +377,7 @@ public class Library {
             PreparedStatement statement = connection.prepareStatement(query);//"SELECT * FROM Book WHERE Book.Publisher_id =(SELECT Publisher_id FROM Publisher WHERE PublisherName = ?)"
             statement.setString(1, publish.getName());
             ResultSet resultSet = statement.executeQuery();
-            while(resultSet.next()) {
-                Author author = new Author(resultSet.getInt("Author_id"), resultSet.getString("FirstName"), resultSet.getString("LastName"));
-                Publisher publisher = new Publisher(resultSet.getInt("Publisher_id"), resultSet.getString("PublisherName"));
-                Genre genre = new Genre(resultSet.getInt("Genre_id"), resultSet.getString("GenreName"));
-                Series series = new Series(resultSet.getInt("Series_id"), resultSet.getString("SeriesName"));// Добавляем серию книги в коллекцию или сохраняем в базе данных
-                Cover cover = new Cover(resultSet.getInt("Cover_id"),resultSet.getString("CoverName"), resultSet.getString("CoverPath"));// Добавляем обложку книги в коллекцию или сохраняем в базе данных
-                Book book = new Book(
-                        resultSet.getInt("id"),
-                        resultSet.getString("title"),
-                        resultSet.getDouble("price"),
-                        resultSet.getInt("pages"),
-                        resultSet.getInt("year"),
-                        resultSet.getString("isbn"),
-                        author,
-                        publisher,
-                        genre,
-                        series,
-                        cover
-                );// Добавляем автора и книгу в коллекцию или сохраняем в базе данных
-                books.add(book);
-            }
-            return books;
+            return getBooks(books, resultSet);
         }catch (SQLException e) {
             System.out.println("Error executing query: " + e);
         }
@@ -484,23 +441,18 @@ public class Library {
             statement.setString(1, isbn);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                Author author = new Author(resultSet.getInt("Author_id"), resultSet.getString("FirstName"), resultSet.getString("LastName"));
-                Publisher publisher = new Publisher(resultSet.getInt("Publisher_id"), resultSet.getString("PublisherName"));
-                Genre genre = new Genre(resultSet.getInt("Genre_id"), resultSet.getString("GenreName"));
-                Series series = new Series(resultSet.getInt("Series_id"), resultSet.getString("SeriesName"));// Добавляем серию книги в коллекцию или сохраняем в базе данных или сохраняем в базе данных
-                Cover cover = new Cover(resultSet.getInt("Cover_id"),resultSet.getString("CoverName"), resultSet.getString("CoverPath"));// Добавляем обложку книги в коллекцию или сохраняем в базе данных или сохраняем в базе данных
-                return new Book(
+               return new Book(
                         resultSet.getInt("id"),
                         resultSet.getString("title"),
                         resultSet.getDouble("price"),
                         resultSet.getInt("pages"),
                         resultSet.getInt("year"),
                         resultSet.getString("isbn"),
-                        author,
-                        publisher,
-                        genre,
-                        series,
-                        cover
+                        new Author(resultSet.getInt("Author_id"), resultSet.getString("FirstName"), resultSet.getString("LastName")),
+                        new Publisher(resultSet.getInt("Publisher_id"), resultSet.getString("PublisherName")),
+                        new Genre(resultSet.getInt("Genre_id"), resultSet.getString("GenreName")),
+                        new Series(resultSet.getInt("Series_id"), resultSet.getString("SeriesName")),
+                        new Cover(resultSet.getInt("Cover_id"),resultSet.getString("CoverName"), resultSet.getString("CoverPath"))
                 );
             }
         } catch (SQLException e) {
@@ -523,28 +475,7 @@ public class Library {
             statement.setString(1, auth.getFirstName());
             statement.setString(2, auth.getLastName());
             ResultSet resultSet = statement.executeQuery();
-            while(resultSet.next()) {
-                Author author = new Author(resultSet.getInt("Author_id"), resultSet.getString("FirstName"), resultSet.getString("LastName"));
-                Publisher publisher = new Publisher(resultSet.getInt("Publisher_id"), resultSet.getString("PublisherName"));
-                Genre genre = new Genre(resultSet.getInt("Genre_id"), resultSet.getString("GenreName"));
-                Series series = new Series(resultSet.getInt("Series_id"), resultSet.getString("SeriesName"));// Добавляем серию книги в коллекцию или сохраняем в базе данных
-                Cover cover = new Cover(resultSet.getInt("Cover_id"),resultSet.getString("CoverName"), resultSet.getString("CoverPath"));// Добавляем обложку книги в коллекцию или сохраняем в базе данных или сохраняем в базе данных
-                Book book = new Book(
-                        resultSet.getInt("id"),
-                        resultSet.getString("title"),
-                        resultSet.getDouble("price"),
-                        resultSet.getInt("pages"),
-                        resultSet.getInt("year"),
-                        resultSet.getString("isbn"),
-                        author,
-                        publisher,
-                        genre,
-                        series,
-                        cover
-                );// Добавляем автора и книгу в коллекцию или сохраняем в базе данных
-                books.add(book);
-            }
-            return books;
+            return getBooks(books, resultSet);
 
         } catch (SQLException e) {
             System.out.println("Error executing query: " + e);
@@ -585,9 +516,7 @@ public class Library {
         List<Book> books = new ArrayList<>();
         try (Connection connection = DatabaseManager.connect()) {
             Statement statement = connection.createStatement();
-           // PreparedStatement statement = connection.prepareStatement(
-                        //"SELECT * FROM Book b INNER JOIN Author a ON b.author_id = a.id INNER JOIN Publisher p ON b.publisher_id = p.id INNER JOIN Genre g ON b.genre_id = g.id");
-String query = "SELECT Book.id, Book.title,Book.price, Book.pages,Book.year,Book.isbn, Author.Author_id, Author.FirstName, Author.LastName, Publisher.Publisher_id, Publisher.PublisherName, Genre.Genre_id ,Genre.GenreName,Series.Series_id ,Series.SeriesName,Cover.Cover_id, Cover.CoverName, Cover.Cover_id,Cover.CoverName ,Cover.CoverPath FROM Book " +
+        String query = "SELECT Book.id, Book.title,Book.price, Book.pages,Book.year,Book.isbn, Author.Author_id, Author.FirstName, Author.LastName, Publisher.Publisher_id, Publisher.PublisherName, Genre.Genre_id ,Genre.GenreName,Series.Series_id ,Series.SeriesName,Cover.Cover_id, Cover.CoverName, Cover.Cover_id,Cover.CoverName ,Cover.CoverPath FROM Book " +
         "JOIN Author ON Book.author_id = Author.Author_id " +
         "JOIN Publisher ON Book.publisher_id = Publisher.Publisher_id " +
         "JOIN Genre ON Book.genre_id = Genre.Genre_id "+
@@ -595,49 +524,31 @@ String query = "SELECT Book.id, Book.title,Book.price, Book.pages,Book.year,Book
         "JOIN Cover ON Book.cover_id = Cover.Cover_id ";// Добавляем обложку книги в коллекцию или сохраняем в базе данных
 
             ResultSet resultSet = statement.executeQuery(query);
-            while (resultSet.next()) {
-                Author author = new Author(
-                        resultSet.getInt("Author_id"),
-                        resultSet.getString("FirstName"),
-                        resultSet.getString("LastName")
-                );
-                Publisher publisher = new Publisher(
-                        resultSet.getInt("Publisher_id"),
-                        resultSet.getString("PublisherName")
-                );
-                Genre genre = new Genre(
-                        resultSet.getInt("Genre_id"),
-                        resultSet.getString("genreName")
-                );
-                Series series = new Series(
-                        resultSet.getInt("Series_id"),
-                        resultSet.getString("SeriesName")
-                );
-                Cover cover = new Cover(
-                        resultSet.getInt("Cover_id"),
-                        resultSet.getString("CoverName"),
-                        resultSet.getString("CoverPath")
-                );
-                Book book = new Book(
-                        resultSet.getInt("id"),
-                        resultSet.getString("title"),
-                        resultSet.getDouble("price"),
-                        resultSet.getInt("pages"),
-                        resultSet.getInt("year"),
-                        resultSet.getString("isbn"),
-                        author,
-                        publisher,
-                        genre,
-                        series,
-                        cover
-                );// Добавляем автора и книгу в коллекцию или сохраняем в базе данных
-                books.add(book);
-            }
-            return books;
+            return getBooks(books, resultSet);
         } catch (SQLException e) {
             System.out.println("Error executing query: " + e);
         }
         return null;
+    }
+
+    private List<Book> getBooks(List<Book> books, ResultSet resultSet) throws SQLException {
+        while (resultSet.next()) {
+            Book book = new Book(
+                    resultSet.getInt("id"),
+                    resultSet.getString("title"),
+                    resultSet.getDouble("price"),
+                    resultSet.getInt("pages"),
+                    resultSet.getInt("year"),
+                    resultSet.getString("isbn"),
+                    new Author(resultSet.getInt("Author_id"), resultSet.getString("FirstName"), resultSet.getString("LastName")),
+                    new Publisher(resultSet.getInt("Publisher_id"), resultSet.getString("PublisherName")),
+                    new Genre(resultSet.getInt("Genre_id"), resultSet.getString("GenreName")),
+                    new Series(resultSet.getInt("Series_id"), resultSet.getString("SeriesName")),
+                    new Cover(resultSet.getInt("Cover_id"),resultSet.getString("CoverName"), resultSet.getString("CoverPath"))
+            );// Добавляем автора и книгу в коллекцию или сохраняем в базе данных
+            books.add(book);
+        }
+        return books;
     }
 
 

@@ -153,7 +153,6 @@ public class DatabaseManager {
         "    title VARCHAR(255)," +
         "    price DECIMAL(10)," +
         "    pages INT," +
-        "    year INT," +
         "    isbn VARCHAR(13)," +
         "    cover_id INT,"    +
         "    series_id INT," +

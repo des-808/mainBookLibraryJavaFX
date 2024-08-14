@@ -26,9 +26,6 @@ public class Book {
     private Cover cover;
     private Series series;
 
-
-
-
     public Book(String title, double price, int pages,int year, String isbn, Author author, Publisher publisher, Genre genre, Series series, Cover cover) {
         this.title = title;
         this.price = price;
