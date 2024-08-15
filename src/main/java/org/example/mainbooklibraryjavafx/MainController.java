@@ -145,4 +145,11 @@ public class MainController {
         }catch (IOException e) { e.printStackTrace();}
 
     }
+
+    public void findTextField(ActionEvent actionEvent) {
+        String text = ((TextField) actionEvent.getSource()).getText();
+        bookList.clear();
+        bookList.addAll(library.findBooks(text));
+        bookTable.setItems(bookList);
+    }
 }

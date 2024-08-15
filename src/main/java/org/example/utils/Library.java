@@ -531,6 +531,40 @@ public class Library {
         return null;
     }
 
+    public List<Book> findBooks(String text) {
+        List<Book> books = new ArrayList<>();
+        try (Connection connection = DatabaseManager.connect()) {
+            String query = "SELECT Book.id, Book.title,Book.price, Book.pages,Book.year,Book.isbn, Author.Author_id, Author.FirstName, Author.LastName, Publisher.Publisher_id, Publisher.PublisherName, Genre.Genre_id ,Genre.GenreName,Series.Series_id ,Series.SeriesName,Cover.Cover_id, Cover.CoverName, Cover.Cover_id,Cover.CoverName ,Cover.CoverPath FROM Book " +
+                    "JOIN Author ON Book.author_id = Author.Author_id " +
+                    "JOIN Publisher ON Book.publisher_id = Publisher.Publisher_id " +
+                    "JOIN Genre ON Book.genre_id = Genre.Genre_id "+
+                    "JOIN Series ON Book.series_id = Series.Series_id " +// Добавляем серию книги в коллекцию или сохраняем в базе данных
+                    "JOIN Cover ON Book.cover_id = Cover.Cover_id " + // Добавляем обложку книги в коллекцию или сохраняем в базе данных
+                    "WHERE Book.title LIKE? OR Book.price LIKE? OR Book.pages LIKE? OR Book.year LIKE? OR Book.isbn LIKE? OR Author.FirstName LIKE? OR Author.LastName LIKE? OR Publisher.PublisherName LIKE? OR Genre.GenreName LIKE? OR Series.SeriesName LIKE? OR Cover.CoverName LIKE?";
+            PreparedStatement statement = connection.prepareStatement(query);//"SELECT * FROM Book WHERE Book.title LIKE ?"
+            statement.setString(1, "%" + text + "%");
+            statement.setString(2, "%" + text + "%");
+            statement.setString(3, "%" + text + "%");
+            statement.setString(4, "%" + text + "%");
+            statement.setString(5, "%" + text + "%");
+            statement.setString(6, "%" + text + "%");
+            statement.setString(7, "%" + text + "%");
+            statement.setString(8, "%" + text + "%");
+            statement.setString(9, "%" + text + "%");
+            statement.setString(10, "%" + text + "%");
+            statement.setString(11, "%" + text + "%");
+            ResultSet resultSet = statement.executeQuery();
+            /*if(resultSet.next()) {
+                return new Book(resultSet.getInt("id"),resultSet.getString("title"),resultSet.getDouble("price"),resultSet.getInt("pages"),resultSet.getInt("year"),resultSet.getString("isbn"), new Author(resultSet.getInt("Author_id"), resultSet.getString("FirstName"), resultSet.getString("LastName")), new Publisher(resultSet.getInt("Publisher_id"), resultSet.getString("PublisherName")), new Genre(resultSet.getInt("Genre_id"), resultSet.getString("GenreName")), new Series(resultSet.getInt("Series_id"), resultSet.getString("SeriesName")), new Cover(resultSet.getInt("Cover_id"),resultSet.getString("CoverName"), resultSet.getString("CoverPath")));
+            }*/
+            return getBooks(books, resultSet);
+
+        } catch (SQLException e) {
+            System.out.println("Error executing query: " + e);
+        }
+        return null;
+    }
+
     private List<Book> getBooks(List<Book> books, ResultSet resultSet) throws SQLException {
         while (resultSet.next()) {
             Book book = new Book(
@@ -550,6 +584,7 @@ public class Library {
         }
         return books;
     }
+
 
 
 }
