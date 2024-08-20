@@ -148,8 +148,20 @@ public class MainController {
 
     public void findTextField(ActionEvent actionEvent) {
         String text = ((TextField) actionEvent.getSource()).getText();
-        bookList.clear();
-        bookList.addAll(library.findBooks(text));
-        bookTable.setItems(bookList);
+        if(library.findBooks(text).isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Поиск");
+            alert.setHeaderText("При поиске введённого слова ни чего не найдено!");
+            //alert.setContentText("Ничего не найдено");
+            alert.showAndWait();
+        }else {
+            bookList.clear();
+            bookList.addAll(library.findBooks(text));
+            bookTable.setItems(bookList);
+        }
+
+
+
+
     }
 }
