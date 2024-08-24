@@ -18,6 +18,7 @@ public class Library {
             int addedGenreId = 0;
             int addedSeriesId = 0;
             int addedCoverId = 0;
+            String isbnOld = book.getIsbnOld();
             // Find or add author
             Author foundAuthor = findAuthor(book.getAuthorObject());
             if (foundAuthor == null) {
@@ -59,7 +60,7 @@ public class Library {
             }
 
             // Update book
-            String query = "UPDATE Book SET title = ?,price =?,pages =?,year =?,author_id = ?,publisher_id =?,genre_id=?,series_id =?,cover_id =?WHERE isbn = ?";
+            String query = "UPDATE Book SET title = ?,price =?,pages =?,year =?,author_id = ?,publisher_id =?,genre_id=?,series_id =?,cover_id =?,isbn = ?WHERE isbn = ?";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, book.getTitle());
             statement.setDouble(2, book.getPrice());
@@ -71,6 +72,7 @@ public class Library {
             statement.setInt(8, addedSeriesId);
             statement.setInt(9, addedCoverId);
             statement.setString(10, book.getIsbn());
+            statement.setString(11, book.getIsbnOld());
             return statement.executeUpdate() > 0;
         } catch (SQLException e) {
             System.out.println("Error executing query: " + e);

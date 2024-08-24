@@ -134,7 +134,7 @@ public class MainController {
             Stage stage = new Stage();
             stage.setTitle(book == null? "Добавление книги" : "Редактирование книги");
             stage.initModality(Modality.APPLICATION_MODAL);
-            Scene scene = new Scene(loader.load(), 400, 400);
+            Scene scene = new Scene(loader.load(), 400, 450);
             scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
             stage.setResizable(false);
             stage.setScene(scene);

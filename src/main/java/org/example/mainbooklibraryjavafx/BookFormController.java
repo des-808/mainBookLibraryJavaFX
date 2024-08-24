@@ -30,6 +30,7 @@ public class BookFormController {
     public void setBook(Book book) {
         this.book = book;
         if(book != null) {
+            book.setIsbnOld(book.getIsbn());
             titleField.setText(book.getTitle());
             priceField.setText(String.valueOf(book.getPrice()));
             pagesField.setText(String.valueOf(book.getPages()));
@@ -53,6 +54,7 @@ public class BookFormController {
         book.setTitle(titleField.getText());
         book.setPrice(Double.parseDouble(priceField.getText()));
         book.setPages(Integer.parseInt(pagesField.getText()));
+        //book.setIsbnOld();
         book.setIsbn(isbnField.getText());
         Author author = new Author(authorFirstField.getText(),authorLastField.getText());
         book.setAuthor(author);

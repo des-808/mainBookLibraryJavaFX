@@ -20,6 +20,10 @@ public class Book {
     private int pages;
     private int year;
     private String isbn;
+
+
+
+    private String isbnOld;
     private Author author;
     private Publisher publisher;
     private Genre genre;
@@ -117,12 +121,19 @@ public class Book {
         return isbn;
     }
     public Book getIsbnBook() {
-        Book book = new Book(isbn);
-        return book;
+        return new Book(isbn);
     }
 
     public void setIsbn(String isbn) {
         this.isbn = isbn;
+    }
+
+    public String getIsbnOld() {
+        return isbnOld;
+    }
+
+    public void setIsbnOld(String isbnOld) {
+        this.isbnOld = isbnOld;
     }
 
     public String getAuthor() {
